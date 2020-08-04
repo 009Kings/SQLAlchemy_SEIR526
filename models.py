@@ -16,7 +16,7 @@ class User(Base):
   email = Column(String, unique=True)
   nickname = Column(String(50))
 
-  # pets = relationship('Pet', back_populates='user')
+  pets = relationship('Pet', back_populates='user', cascade="all, delete, delete-orphan")
 
   def __repr__(self):
     return f'<User(id={self.id}, name="{self.name}", email="{self.email}", nickname="{self.nickname}")>'
@@ -33,8 +33,8 @@ class Pet(Base):
   user_id = Column(ForeignKey('users.id'))
 
   # Model functionality
-  # user = relationship('User', back_populates='pets')
-  user = relationship('User', backref='pets')
+  user = relationship('User', back_populates='pets')
+  # user = relationship('User', backref='pets')
 
   def __repr__(self):
     return f'<Pet(id={self.id}, name="{self.name}", species="{self.species}", age={self.age}, user_id={self.user_id})>'
