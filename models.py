@@ -36,11 +36,7 @@ class Pet(Base):
   # user = relationship('User', back_populates='pets')
   user = relationship('User', backref='pets')
 
-'''
-SELECT pets.name, users.name
-FROM users
-ON users.id = pets.user_id
-'''
-# user_id: INT FK
+  def __repr__(self):
+    return f'<Pet(id={self.id}, name="{self.name}", species="{self.species}", age={self.age}, user_id={self.user_id})>'
 
 Base.metadata.create_all(engine)
