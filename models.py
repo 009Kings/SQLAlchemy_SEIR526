@@ -1,6 +1,6 @@
 import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Sequence, ForeignKey, create_engine
+from sqlalchemy import Column, Integer, String, Sequence, ForeignKey, Table, create_engine
 from sqlalchemy.orm import relationship
 
 # db uri = dbEngine://username:password@netloc:port/dbname
@@ -21,6 +21,13 @@ class User(Base):
   def __repr__(self):
     return f'<User(id={self.id}, name="{self.name}", email="{self.email}", nickname="{self.nickname}")>'
 
+pet_toys = Table(
+  'pet_toys', 
+  Base.metadata,
+  Column('pet_id', ForeignKey('pets.id'), primary_key=True),
+  Column('toy_id', ForeignKey('toys.id'), primary_key=True)
+)
+
 # Create a Pet
 class Pet(Base):
   __tablename__ = 'pets'
@@ -35,8 +42,21 @@ class Pet(Base):
   # Model functionality
   user = relationship('User', back_populates='pets')
   # user = relationship('User', backref='pets')
+  toys = relationship('Toy', secondary=pet_toys, back_populates='pets')
 
   def __repr__(self):
     return f'<Pet(id={self.id}, name="{self.name}", species="{self.species}", age={self.age}, user_id={self.user_id})>'
+  
+class Toy(Base):
+  __tablename__ = 'toys'
+
+  id = Column(Integer, Sequence('toy_id_seq'), primary_key=True)
+  type = Column(String(50), nullable=False, unique=True)
+  color = Column(String(50))
+
+  pets = relationship('Pet', secondary=pet_toys, back_populates='toys')
+
+  def __repr__(self):
+    return f'<Toy(id={self.id}, type="{self.type}", color="{self.color}")>'
 
 Base.metadata.create_all(engine)

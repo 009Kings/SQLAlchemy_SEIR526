@@ -1,6 +1,6 @@
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
-from models import engine, User, Pet
+from models import engine, User, Pet, Toy
 
 Session = sessionmaker(bind=engine)
 
@@ -49,12 +49,13 @@ def main():
   go_to_gal.pets += [Pet(name='Ballad', species='dog', age=9), Pet(name='Blub', species='fish')]
   print(go_to_gal.pets)
 
-  session.query(User, Pet).filter(User.id==Pet.user_id).filter(User.nickname='Mads')
-
+  session.query(User, Pet).filter(User.id==Pet.user_id).filter(User.nickname=='Mads')
   session.query(User).join(Pet).filter(User.nickname=='Mads').all()
 
+  emmy.toys.append(Toy(type='ball', color='lime green'))
+  print(f'🎾 {emmy.toys}')
   # Step 4: Commit the session to the db (like a commit or PR)
-  # session.commit()
+  session.commit()
 
 
 # Allows us to import the script without calling its functions immediately
